@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "plantuml-mcp-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["./build/index.js"]
+    }
+  }
+}
