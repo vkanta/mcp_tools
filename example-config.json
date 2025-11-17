@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "custom-tools": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/mcp_tools/dist/index.js"
+      ],
+      "description": "Custom MCP tools for text analysis, data transformation, and utilities"
+    }
+  }
+}
