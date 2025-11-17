@@ -1,0 +1,31 @@
+{
+  "name": "mcp_tools",
+  "version": "1.0.0",
+  "description": "Custom MCP (Model Context Protocol) tools collection",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "mcp-tools": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "tools",
+    "ai"
+  ],
+  "author": "vkanta",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}
