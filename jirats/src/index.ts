@@ -6,6 +6,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
 
 // Configuration and tools
 import { loadConfig } from "./config.js";
@@ -35,6 +36,31 @@ async function main() {
 
   console.error("Registering JIRA tools...");
   registerIssueTools(server);
+  
+  // Register serverInfo method for slash command discovery
+  server.registerTool(
+    "serverInfo",
+    {
+      description: "Get information about the JIRA MCP Server",
+      inputSchema: z.object({})
+    },
+    async () => ({
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          name: "jira-mcp-server",
+          version: "1.0.0",
+          description: "JIRA integration server using Model Context Protocol",
+          capabilities: {
+            tools: true,
+            resources: false,
+            prompts: false
+          }
+        }, null, 2)
+      }]
+    })
+  );
+  
   console.error("JIRA MCP Server is ready to accept connections");
 
   // Connect transport and start server

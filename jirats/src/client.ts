@@ -44,6 +44,10 @@ function createHttpClient() {
       throw new Error(`JIRA API error: ${response.status} - ${errorBody}`);
     }
     
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
     return (await response.json()) as T;
   };
 }
@@ -51,15 +55,16 @@ function createHttpClient() {
 /**
  * Get current authenticated user
  */
-export async function getCurrentUser(): Promise<{ displayName: string; email: string }> {
+export async function getCurrentUser(): Promise<{ name: string; displayName: string; email: string }> {
   const client = createHttpClient();
-  const data = await client<{ account_id: string; display_name: string; email_address: string }>(
-    "/rest/api/2/myself?fields=accountId,displayName,emailAddress"
+  const data = await client<{ name: string; displayName: string; emailAddress: string }>(
+    "/rest/api/2/myself"
   );
-  
+
   return {
-    displayName: data.display_name,
-    email: data.email_address,
+    name: data.name,
+    displayName: data.displayName,
+    email: data.emailAddress,
   };
 }
 
@@ -192,21 +197,21 @@ export async function transitionIssue(
 }
 
 /**
- * Assign issue to user
+ * Assign issue to a user by username. "me" resolves to the authenticated user
+ * and null unassigns the issue.
  */
 export async function assignIssue(
   issueKey: string,
-  assignee: string
+  assignee: string | null
 ): Promise<void> {
   const client = createHttpClient();
-  
+  const username = assignee === "me" ? (await getCurrentUser()).name : assignee;
+
   await client(
     `/rest/api/2/issue/${issueKey}/assignee`,
     {
       method: "PUT",
-      body: JSON.stringify({
-        name: assignee, // Use account ID or username
-      }),
+      body: JSON.stringify({ name: username }),
     }
   );
 }

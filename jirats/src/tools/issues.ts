@@ -5,6 +5,7 @@ import {
   getIssueDetails,
   addComment,
   updateIssueDescription,
+  assignIssue,
   getCurrentUser,
 } from "../client.js";
 
@@ -159,6 +160,30 @@ export function registerIssueTools(server: McpServer) {
           {
             type: "text",
             text: JSON.stringify({ success: true }, null, 2),
+          },
+        ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "assign_issue",
+    {
+      description:
+        "Assign a JIRA issue to a user. Use \"me\" for the authenticated user, or omit assignee to unassign",
+      inputSchema: z.object({
+        issue_key: z.string(),
+        assignee: z.string().optional(),
+      }),
+    },
+    async ({ issue_key, assignee }) => {
+      await assignIssue(issue_key, assignee ?? null);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({ success: true, issue_key, assignee: assignee ?? null }, null, 2),
           },
         ],
       };
